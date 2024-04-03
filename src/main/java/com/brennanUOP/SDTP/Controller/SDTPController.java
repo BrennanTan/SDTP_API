@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -38,8 +37,7 @@ public class SDTPController {
                 }
                 reader.close();
 
-                JSONArray jsonArray = new JSONArray(response.toString());
-                return jsonArray;
+                return new JSONArray(response.toString());
             }else {
                 System.err.println("Request failed: " + responseCode);
             }
@@ -75,7 +73,7 @@ public class SDTPController {
                     jsonObject = new JSONObject(response.toString());
                 } catch (JSONException e) {
                     System.err.println("Error parsing JSON response:");
-                    System.err.println(response.toString());
+                    System.err.println(response);
                     e.printStackTrace();
                 }
 
