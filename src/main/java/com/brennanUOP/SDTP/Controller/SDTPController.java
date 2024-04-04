@@ -15,7 +15,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
-
 @RestController
 public class SDTPController {
     public JSONArray connectAndReturnJson(String endpoint){
@@ -48,7 +47,6 @@ public class SDTPController {
         }
         return null;
     }
-
     public JSONObject connectAndReturnJson(String endpoint, String id){
         try{
             //UOP API url to get data from
