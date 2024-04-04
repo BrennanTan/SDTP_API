@@ -46,7 +46,7 @@ public class SDTPGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String id = idField.getText();
-                List<Admission> admissions = apiController.GetAdmissionsForSpecificPatient(id);
+                List<Admission> admissions = apiController.GetAdmissionsForSpecificPatientEndpoint(id);
                 displayAdmissions(admissions);
             }
         });

@@ -49,7 +49,7 @@ public class SDTPController {
         return null;
     }
 
-    public JSONObject connectAndReturnJson(String endpoint, int id){
+    public JSONObject connectAndReturnJson(String endpoint, String id){
         try{
             //UOP API url to get data from
             String UOP_APIUrl = "https://web.socem.plymouth.ac.uk/COMP2005/api/" + endpoint + "/" + id;
@@ -90,11 +90,32 @@ public class SDTPController {
     }
 
     @GetMapping("/F1/{patientId}")
-    public List<Admission> GetAdmissionsForSpecificPatient(@PathVariable final String patientId){
+    public List<Admission> GetAdmissionsForSpecificPatientEndpoint(@PathVariable final String patientId) {
+        var jsonArray = connectAndReturnJson("Admissions");
+        return GetAdmissionsForSpecificPatient(jsonArray,patientId);
+    }
+    @GetMapping("/F2")
+    public List<Patients> GetListAdmittedPatientsEndpoint() {
+        var jsonArray = connectAndReturnJson("Admissions");
+        var ListAdmittedPatientsId = GetListAdmittedPatientsId(jsonArray);
+        return GetListAdmittedPatients(ListAdmittedPatientsId);
+    }
+    @GetMapping("/F3")
+    public List<Employees> GetMostAdmissionsStaffEndpoint() {
+        var jsonArray = connectAndReturnJson("Allocations");
+        var EmployeeAdmissionsCount = GetEmployeeAdmissionsCount(jsonArray);
+        return GetMostAdmissionsStaff(EmployeeAdmissionsCount);
+    }
+    @GetMapping("/F4")
+    public List<Employees> GetListOfNoAdmissionStaffEndpoint() {
+        var jsonArray = connectAndReturnJson("Allocations");
+        var ListStaffIdsWithAdmissions = GetListStaffIdsWithAdmissions(jsonArray);
+        return GetListOfNoAdmissionStaff(ListStaffIdsWithAdmissions);
+    }
+
+    public List<Admission> GetAdmissionsForSpecificPatient(JSONArray jsonArray, String patientId){
         List<Admission> admissions = new ArrayList<>();
         try{
-            JSONArray jsonArray = connectAndReturnJson("Admissions");
-
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
@@ -107,7 +128,6 @@ public class SDTPController {
                     );
                     admissions.add(admission);
                 }
-
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -115,15 +135,10 @@ public class SDTPController {
         return admissions;
     }
 
-    @GetMapping("/F2")
-    public List<Patients> GetListAdmittedPatients(){
-        //Return list of admitted patients (Not discharged)
-        List<Patients> admittedPatientsList = new ArrayList<>();
+    public List<Integer> GetListAdmittedPatientsId(JSONArray admissionsJsonArray){
         //Store patient ids so we can fetch the patients
         List<Integer> patientId = new ArrayList<>();
-
         try{
-            JSONArray admissionsJsonArray = connectAndReturnJson("Admissions");
             if (admissionsJsonArray != null) {
                 for (int i = 0; i < admissionsJsonArray.length(); i++) {
                     JSONObject jsonObject = admissionsJsonArray.getJSONObject(i);
@@ -132,34 +147,40 @@ public class SDTPController {
                     }
                 }
 
-                for (int p = 0; p < patientId.size(); p++) {
-                    JSONObject patientJsonObject = connectAndReturnJson("Patients", patientId.get(p));
-                    if (patientJsonObject != null) {
-                        Patients admittedPatient = new Patients(
-                                patientJsonObject.getInt("id"),
-                                patientJsonObject.getString("surname"),
-                                patientJsonObject.getString("forename"),
-                                patientJsonObject.getString("nhsNumber")
-                        );
-                        admittedPatientsList.add(admittedPatient);
-                    }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return patientId;
+    }
+
+    public List<Patients> GetListAdmittedPatients(List<Integer> patientId){
+        //Return list of admitted patients (Not discharged)
+        List<Patients> admittedPatientsList = new ArrayList<>();
+
+        try{
+            for (int p = 0; p < patientId.size(); p++) {
+                JSONObject patientJsonObject = connectAndReturnJson("Patients", String.valueOf(patientId.get(p)));
+                if (patientJsonObject != null) {
+                    Patients admittedPatient = new Patients(
+                            patientJsonObject.getInt("id"),
+                            patientJsonObject.getString("surname"),
+                            patientJsonObject.getString("forename"),
+                            patientJsonObject.getString("nhsNumber")
+                    );
+                    admittedPatientsList.add(admittedPatient);
                 }
             }
         }catch(Exception e){
             e.printStackTrace();
         }
-
         return admittedPatientsList;
     }
 
-    @GetMapping("/F3")
-    public List<Employees> GetMostAdmissionsStaff(){
-        List<Employees> mostAdmissionsStaff = new ArrayList<>();
-
+    public HashMap<Integer, Integer> GetEmployeeAdmissionsCount(JSONArray allocationsJsonArray){
+        HashMap<Integer, Integer> employeeAdmissionsCount = new HashMap<>();
         try{
-            JSONArray allocationsJsonArray = connectAndReturnJson("Allocations");
             if (allocationsJsonArray != null) {
-                HashMap<Integer, Integer> employeeAdmissionsCount = new HashMap<>();
 
                 for (int i = 0; i < allocationsJsonArray.length(); i++) {
                     JSONObject jsonObject = allocationsJsonArray.getJSONObject(i);
@@ -167,7 +188,19 @@ public class SDTPController {
                     int employeeId = jsonObject.getInt("employeeID");
                     employeeAdmissionsCount.put(employeeId, employeeAdmissionsCount.getOrDefault(employeeId, 0) + 1);
                 }
+            }else{
+                return null;
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return employeeAdmissionsCount;
+    }
 
+    public List<Employees> GetMostAdmissionsStaff(HashMap<Integer, Integer> employeeAdmissionsCount){
+        List<Employees> mostAdmissionsStaff = new ArrayList<>();
+
+        try{
                 int maxAdmissions = 0;
                 List<Integer> mostAdmissionsStaffID = new ArrayList<>();
 
@@ -183,7 +216,7 @@ public class SDTPController {
                 }
 
                 for (int s = 0; s < mostAdmissionsStaffID.size(); s++) {
-                    JSONObject employeeJsonObject = connectAndReturnJson("Employees", mostAdmissionsStaffID.get(s));
+                    JSONObject employeeJsonObject = connectAndReturnJson("Employees", String.valueOf(mostAdmissionsStaffID.get(s)));
                     if (employeeJsonObject != null) {
                         Employees highestAdmissionStaff = new Employees(
                                 employeeJsonObject.getInt("id"),
@@ -193,27 +226,33 @@ public class SDTPController {
                         mostAdmissionsStaff.add(highestAdmissionStaff);
                     }
                 }
-            }
         }catch(Exception e){
             e.printStackTrace();
         }
         return mostAdmissionsStaff;
     }
 
-    @GetMapping("/F4")
-    public List<Employees> GetListOfNoAdmissionStaff(){
-        List<Employees> noAdmissionStaff = new ArrayList<>();
-
+    public Set<Integer> GetListStaffIdsWithAdmissions(JSONArray allocationsJsonArray){
+        Set<Integer> staffIdsWithAdmissions = new HashSet<>();
         try{
-            JSONArray allocationsJsonArray = connectAndReturnJson("Allocations");
             if (allocationsJsonArray != null) {
-                Set<Integer> staffIdsWithAdmissions = new HashSet<>();
                 for (int i = 0; i < allocationsJsonArray.length(); i++) {
                     JSONObject admission = allocationsJsonArray.getJSONObject(i);
                     int employeeId = admission.getInt("employeeID");
                     staffIdsWithAdmissions.add(employeeId);
                 }
+            }else{
+                return null;
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return staffIdsWithAdmissions;
+    }
 
+    public List<Employees> GetListOfNoAdmissionStaff(Set<Integer> staffIdsWithAdmissions){
+        List<Employees> noAdmissionStaff = new ArrayList<>();
+        try{
                 JSONArray staffJsonArray = connectAndReturnJson("Employees");
                 if (staffJsonArray != null) {
                     for (int i = 0; i < staffJsonArray.length(); i++) {
@@ -229,12 +268,10 @@ public class SDTPController {
                         }
                     }
                 }
-            }
         }catch(Exception e){
             e.printStackTrace();
         }
         return noAdmissionStaff;
     }
-    
 }
 
