@@ -114,23 +114,31 @@ public class SDTPController {
     public List<Admission> GetAdmissionsForSpecificPatient(JSONArray jsonArray, String patientId){
         List<Admission> admissions = new ArrayList<>();
         try{
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                if (jsonObject.getInt("patientID") == Integer.parseInt(patientId)) {
-                    Admission admission = new Admission(
-                            jsonObject.getInt("id"),
-                            jsonObject.getString("admissionDate"),
-                            jsonObject.getString("dischargeDate"),
-                            jsonObject.getInt("patientID")
-                    );
-                    admissions.add(admission);
+                    if (jsonObject.getInt("patientID") == Integer.parseInt(patientId)) {
+                        Admission admission = new Admission(
+                                jsonObject.getInt("id"),
+                                jsonObject.getString("admissionDate"),
+                                jsonObject.getString("dischargeDate"),
+                                jsonObject.getInt("patientID")
+                        );
+                        admissions.add(admission);
+                    }
                 }
+                if (admissions.size() < 1){
+                    return null;
+                }
+                return admissions;
+            }else {
+                return null;
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-        return admissions;
+        return null;
     }
 
     public List<Integer> GetListAdmittedPatientsId(JSONArray admissionsJsonArray){
@@ -144,41 +152,50 @@ public class SDTPController {
                         patientId.add(jsonObject.getInt("patientID"));
                     }
                 }
-
+                if (patientId.size() < 1) {
+                    return null;
+                }
+                return patientId;
+            }else{
+                return null;
             }
         }catch(Exception e){
             e.printStackTrace();
         }
-        return patientId;
+        return null;
     }
-
     public List<Patients> GetListAdmittedPatients(List<Integer> patientId){
         //Return list of admitted patients (Not discharged)
         List<Patients> admittedPatientsList = new ArrayList<>();
 
         try{
-            for (int p = 0; p < patientId.size(); p++) {
-                JSONObject patientJsonObject = connectAndReturnJson("Patients", String.valueOf(patientId.get(p)));
-                if (patientJsonObject != null) {
-                    Patients admittedPatient = new Patients(
-                            patientJsonObject.getInt("id"),
-                            patientJsonObject.getString("surname"),
-                            patientJsonObject.getString("forename"),
-                            patientJsonObject.getString("nhsNumber")
-                    );
-                    admittedPatientsList.add(admittedPatient);
+            if (patientId != null && patientId.size() > 0) {
+                for (int p = 0; p < patientId.size(); p++) {
+                    JSONObject patientJsonObject = connectAndReturnJson("Patients", String.valueOf(patientId.get(p)));
+                    if (patientJsonObject != null) {
+                        Patients admittedPatient = new Patients(
+                                patientJsonObject.getInt("id"),
+                                patientJsonObject.getString("surname"),
+                                patientJsonObject.getString("forename"),
+                                patientJsonObject.getString("nhsNumber")
+                        );
+                        admittedPatientsList.add(admittedPatient);
+                    }
                 }
+                return admittedPatientsList;
+            }else{
+                return null;
             }
         }catch(Exception e){
             e.printStackTrace();
         }
-        return admittedPatientsList;
+        return null;
     }
 
     public HashMap<Integer, Integer> GetEmployeeAdmissionsCount(JSONArray allocationsJsonArray){
         HashMap<Integer, Integer> employeeAdmissionsCount = new HashMap<>();
         try{
-            if (allocationsJsonArray != null) {
+            if (allocationsJsonArray != null && allocationsJsonArray.length() > 0) {
 
                 for (int i = 0; i < allocationsJsonArray.length(); i++) {
                     JSONObject jsonObject = allocationsJsonArray.getJSONObject(i);
@@ -186,13 +203,14 @@ public class SDTPController {
                     int employeeId = jsonObject.getInt("employeeID");
                     employeeAdmissionsCount.put(employeeId, employeeAdmissionsCount.getOrDefault(employeeId, 0) + 1);
                 }
+                return employeeAdmissionsCount;
             }else{
                 return null;
             }
         }catch(Exception e){
             e.printStackTrace();
         }
-        return employeeAdmissionsCount;
+        return null;
     }
 
     public List<Employees> GetMostAdmissionsStaff(HashMap<Integer, Integer> employeeAdmissionsCount){
@@ -233,26 +251,27 @@ public class SDTPController {
     public Set<Integer> GetListStaffIdsWithAdmissions(JSONArray allocationsJsonArray){
         Set<Integer> staffIdsWithAdmissions = new HashSet<>();
         try{
-            if (allocationsJsonArray != null) {
+            if (allocationsJsonArray != null && allocationsJsonArray.length() > 0) {
                 for (int i = 0; i < allocationsJsonArray.length(); i++) {
                     JSONObject admission = allocationsJsonArray.getJSONObject(i);
                     int employeeId = admission.getInt("employeeID");
                     staffIdsWithAdmissions.add(employeeId);
                 }
+                return staffIdsWithAdmissions;
             }else{
                 return null;
             }
         }catch(Exception e){
             e.printStackTrace();
         }
-        return staffIdsWithAdmissions;
+        return null;
     }
 
     public List<Employees> GetListOfNoAdmissionStaff(Set<Integer> staffIdsWithAdmissions){
         List<Employees> noAdmissionStaff = new ArrayList<>();
         try{
                 JSONArray staffJsonArray = connectAndReturnJson("Employees");
-                if (staffJsonArray != null) {
+                if (staffJsonArray != null && staffIdsWithAdmissions !=null && staffIdsWithAdmissions.size() > 0) {
                     for (int i = 0; i < staffJsonArray.length(); i++) {
                         JSONObject staff = staffJsonArray.getJSONObject(i);
                         int staffId = staff.getInt("id");
@@ -265,11 +284,14 @@ public class SDTPController {
                             noAdmissionStaff.add(staffMember);
                         }
                     }
+                    return noAdmissionStaff;
+                }else{
+                    return null;
                 }
         }catch(Exception e){
             e.printStackTrace();
         }
-        return noAdmissionStaff;
+        return null;
     }
 }
 
