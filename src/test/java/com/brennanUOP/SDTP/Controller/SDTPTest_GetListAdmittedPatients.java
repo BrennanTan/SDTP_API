@@ -1,6 +1,5 @@
 package com.brennanUOP.SDTP.Controller;
 
-import com.brennanUOP.SDTP.Model.Admission;
 import com.brennanUOP.SDTP.Model.Patients;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -74,7 +73,11 @@ class SDTPTest_GetListAdmittedPatients {
         assertEquals("Heather", result.get(1).getForename());
         assertEquals("2224446666", result.get(1).getNhsNumber());
 
-        System.out.println(result);
+        for (int i = 0; i < result.size(); i++) {
+            System.out.println(result.get(i).getId());
+            System.out.println(result.get(i).getSurname());
+            System.out.println(result.get(i).getForename());
+        }
     }
     @Test
     public void testGetListAdmittedPatientsNullPatientId() {
