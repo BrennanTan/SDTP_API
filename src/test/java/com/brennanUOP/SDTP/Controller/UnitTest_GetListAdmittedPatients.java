@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SDTPTest_GetListAdmittedPatients {
+class UnitTest_GetListAdmittedPatients {
     @Test
     public void testGetListAdmittedPatientsId() {
         JSONArray jsonArray;

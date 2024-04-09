@@ -1,13 +1,12 @@
 package com.brennanUOP.SDTP.Controller;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SDTPTest_connectAndReturnJsonOverload {
+class UnitTest_connectAndReturnJsonOverload {
     // If wrong endpoint, return null
     @Test
     public void testWrongEndpointReturnsNull() {

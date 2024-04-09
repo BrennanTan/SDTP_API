@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SDTPTest_GetAdmissionsForSpecificPatient {
+class UnitTest_GetAdmissionsForSpecificPatient {
 
     @Test
     public void testGetAdmissionsForSpecificPatient() {

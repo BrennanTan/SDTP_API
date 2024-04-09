@@ -17,6 +17,29 @@ import java.net.URL;
 import java.util.*;
 @RestController
 public class SDTPController {
+    @GetMapping("/F1/{patientId}")
+    public List<Admission> GetAdmissionsForSpecificPatientEndpoint(@PathVariable final String patientId) {
+        var jsonArray = connectAndReturnJson("Admissions");
+        return GetAdmissionsForSpecificPatient(jsonArray,patientId);
+    }
+    @GetMapping("/F2")
+    public List<Patients> GetListAdmittedPatientsEndpoint() {
+        var jsonArray = connectAndReturnJson("Admissions");
+        var ListAdmittedPatientsId = GetListAdmittedPatientsId(jsonArray);
+        return GetListAdmittedPatients(ListAdmittedPatientsId);
+    }
+    @GetMapping("/F3")
+    public List<Employees> GetMostAdmissionsStaffEndpoint() {
+        var jsonArray = connectAndReturnJson("Allocations");
+        var EmployeeAdmissionsCount = GetEmployeeAdmissionsCount(jsonArray);
+        return GetMostAdmissionsStaff(EmployeeAdmissionsCount);
+    }
+    @GetMapping("/F4")
+    public List<Employees> GetListOfNoAdmissionStaffEndpoint() {
+        var jsonArray = connectAndReturnJson("Allocations");
+        var ListStaffIdsWithAdmissions = GetListStaffIdsWithAdmissions(jsonArray);
+        return GetListOfNoAdmissionStaff(ListStaffIdsWithAdmissions);
+    }
     public JSONArray connectAndReturnJson(String endpoint){
         try{
             //UOP API url to get data from
@@ -86,31 +109,6 @@ public class SDTPController {
         }
         return null;
     }
-
-    @GetMapping("/F1/{patientId}")
-    public List<Admission> GetAdmissionsForSpecificPatientEndpoint(@PathVariable final String patientId) {
-        var jsonArray = connectAndReturnJson("Admissions");
-        return GetAdmissionsForSpecificPatient(jsonArray,patientId);
-    }
-    @GetMapping("/F2")
-    public List<Patients> GetListAdmittedPatientsEndpoint() {
-        var jsonArray = connectAndReturnJson("Admissions");
-        var ListAdmittedPatientsId = GetListAdmittedPatientsId(jsonArray);
-        return GetListAdmittedPatients(ListAdmittedPatientsId);
-    }
-    @GetMapping("/F3")
-    public List<Employees> GetMostAdmissionsStaffEndpoint() {
-        var jsonArray = connectAndReturnJson("Allocations");
-        var EmployeeAdmissionsCount = GetEmployeeAdmissionsCount(jsonArray);
-        return GetMostAdmissionsStaff(EmployeeAdmissionsCount);
-    }
-    @GetMapping("/F4")
-    public List<Employees> GetListOfNoAdmissionStaffEndpoint() {
-        var jsonArray = connectAndReturnJson("Allocations");
-        var ListStaffIdsWithAdmissions = GetListStaffIdsWithAdmissions(jsonArray);
-        return GetListOfNoAdmissionStaff(ListStaffIdsWithAdmissions);
-    }
-
     public List<Admission> GetAdmissionsForSpecificPatient(JSONArray jsonArray, String patientId){
         List<Admission> admissions = new ArrayList<>();
         try{
@@ -214,9 +212,9 @@ public class SDTPController {
     }
 
     public List<Employees> GetMostAdmissionsStaff(HashMap<Integer, Integer> employeeAdmissionsCount){
-        List<Employees> mostAdmissionsStaff = new ArrayList<>();
-
-        try{
+        if (employeeAdmissionsCount != null && employeeAdmissionsCount.size() > 0) {
+            List<Employees> mostAdmissionsStaff = new ArrayList<>();
+            try{
                 int maxAdmissions = 0;
                 List<Integer> mostAdmissionsStaffID = new ArrayList<>();
 
@@ -242,10 +240,13 @@ public class SDTPController {
                         mostAdmissionsStaff.add(highestAdmissionStaff);
                     }
                 }
-        }catch(Exception e){
-            e.printStackTrace();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            return mostAdmissionsStaff;
+        }else {
+            return null;
         }
-        return mostAdmissionsStaff;
     }
 
     public Set<Integer> GetListStaffIdsWithAdmissions(JSONArray allocationsJsonArray){

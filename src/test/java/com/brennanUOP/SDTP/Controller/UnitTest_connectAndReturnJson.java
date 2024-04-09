@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SDTPTest_connectAndReturnJson {
+public class UnitTest_connectAndReturnJson {
 
     // If wrong endpoint, return null
     @Test
