@@ -1,6 +1,7 @@
 package com.brennanUOP.SDTP.Controller;
 
 import com.brennanUOP.SDTP.Model.Admission;
+import com.brennanUOP.SDTP.Model.Patients;
 import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
 
@@ -12,11 +13,12 @@ import java.net.HttpURLConnection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-public class IntegrationTest_F1Endpoint {
+public class IntegrationTest_F2Endpoint {
     @Test
-    public void F1Endpoint_Success() throws Exception {
+    public void F2Endpoint_Success() throws Exception {
         HttpURLConnection mockConnection = mock(HttpURLConnection.class);
         // Mock response from the API
         String jsonResponse = "[{\"id\":1,\"admissionDate\":\"2020-11-28T16:45:00\",\"dischargeDate\":\"2020-11-28T23:56:00\",\"patientID\":2},{\"id\":2,\"admissionDate\":\"2020-12-07T22:14:00\",\"dischargeDate\":\"0001-01-01T00:00:00\",\"patientID\":1},{\"id\":3,\"admissionDate\":\"2021-09-23T21:50:00\",\"dischargeDate\":\"2021-09-27T09:56:00\",\"patientID\":2}]";
@@ -28,15 +30,15 @@ public class IntegrationTest_F1Endpoint {
         JSONArray jsonArray = connectAndReturnJson(mockConnection);
 
         SDTPController sdtpController = new SDTPController();
-        List<Admission> result = sdtpController.GetAdmissionsForSpecificPatient(jsonArray,"1");
+        List<Integer> patientsId = sdtpController.GetListAdmittedPatientsId(jsonArray);
+        List<Patients> result = sdtpController.GetListAdmittedPatients(patientsId);
 
         assertEquals(1, result.size());
-        assertEquals(2, result.get(0).getId());
-        assertEquals("2020-12-07T22:14:00", result.get(0).getAdmissionDate());
-        assertEquals("0001-01-01T00:00:00", result.get(0).getDischargeDate());
-        assertEquals(1, result.get(0).getPatientID());
+        assertEquals(1, result.get(0).getId());
+        assertEquals("Robinson", result.get(0).getSurname());
+        assertEquals("Viv", result.get(0).getForename());
+        assertEquals("1113335555", result.get(0).getNhsNumber());
     }
-
     public JSONArray connectAndReturnJson(HttpURLConnection connection) {
         // Use the mock connection and return it's mock response
         try {
