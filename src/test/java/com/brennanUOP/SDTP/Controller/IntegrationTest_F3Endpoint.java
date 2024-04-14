@@ -1,7 +1,6 @@
 package com.brennanUOP.SDTP.Controller;
 
 import com.brennanUOP.SDTP.Model.Employees;
-import com.brennanUOP.SDTP.Model.Patients;
 import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
 
