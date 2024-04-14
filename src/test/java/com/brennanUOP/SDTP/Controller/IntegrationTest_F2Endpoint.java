@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 public class IntegrationTest_F2Endpoint {
     @Test
     public void F2Endpoint_Success() throws Exception {
+        long startTime = System.currentTimeMillis();
         HttpURLConnection mockConnection = mock(HttpURLConnection.class);
         // Mock response from the API
         String jsonResponse = "[{\"id\":1,\"admissionDate\":\"2020-11-28T16:45:00\",\"dischargeDate\":\"2020-11-28T23:56:00\",\"patientID\":2},{\"id\":2,\"admissionDate\":\"2020-12-07T22:14:00\",\"dischargeDate\":\"0001-01-01T00:00:00\",\"patientID\":1},{\"id\":3,\"admissionDate\":\"2021-09-23T21:50:00\",\"dischargeDate\":\"2021-09-27T09:56:00\",\"patientID\":2}]";
@@ -37,6 +38,16 @@ public class IntegrationTest_F2Endpoint {
         assertEquals("Robinson", result.get(0).getSurname());
         assertEquals("Viv", result.get(0).getForename());
         assertEquals("1113335555", result.get(0).getNhsNumber());
+
+        for (Patients patients : result){
+            System.out.println(patients.getId());
+            System.out.println(patients.getSurname());
+            System.out.println(patients.getForename());
+            System.out.println(patients.getNhsNumber());
+        }
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("F2Endpoint_Success - Execution time: " + executionTime + "ms");
     }
     public JSONArray connectAndReturnJson(HttpURLConnection connection) {
         // Use the mock connection and return it's mock response

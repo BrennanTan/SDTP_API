@@ -10,8 +10,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UnitTest_GetListAdmittedPatients {
+
+    // Test for GetListAdmittedPatientsId method
     @Test
     public void testGetListAdmittedPatientsId() {
+        long startTime = System.currentTimeMillis();
+
         JSONArray jsonArray;
         try {
             jsonArray = new JSONArray(
@@ -24,13 +28,21 @@ class UnitTest_GetListAdmittedPatients {
 
             assertEquals(1, result.size());
             assertEquals(1, result.get(0));
-            System.out.println(result);
+
+            long endTime = System.currentTimeMillis();
+            long executionTime = endTime - startTime;
+            System.out.println("Result: " + result);
+            System.out.println("testGetListAdmittedPatientsId - Execution time: " + executionTime + "ms");
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
+
+    // Test for GetListAdmittedPatientsId method with empty JSONArray
     @Test
     public void testGetListAdmittedPatientsIdEmptyJsonArray() {
+        long startTime = System.currentTimeMillis();
+
         JSONArray jsonArray;
         try {
             jsonArray = new JSONArray("[]");
@@ -41,9 +53,17 @@ class UnitTest_GetListAdmittedPatients {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("testGetListAdmittedPatientsIdEmptyJsonArray - Execution time: " + executionTime + "ms");
     }
+
+    // Test for GetListAdmittedPatients method
     @Test
     public void testGetListAdmittedPatients() {
+        long startTime = System.currentTimeMillis();
+
         List<Integer> patientsId = List.of(1);
         SDTPController controller = new SDTPController();
         List<Patients> result = controller.GetListAdmittedPatients(patientsId);
@@ -54,11 +74,23 @@ class UnitTest_GetListAdmittedPatients {
         assertEquals("Viv", result.get(0).getForename());
         assertEquals("1113335555", result.get(0).getNhsNumber());
 
-        System.out.println(result);
+        for (Patients patient : result) {
+            System.out.println(patient.getId());
+            System.out.println(patient.getSurname());
+            System.out.println(patient.getForename());
+        }
+
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("testGetListAdmittedPatients - Execution time: " + executionTime + "ms");
     }
+
+    // Test for GetListAdmittedPatients method with multiple patient IDs
     @Test
     public void testGetListAdmittedPatientsMultiplePatientId() {
-        List<Integer> patientsId = List.of(1,2);
+        long startTime = System.currentTimeMillis();
+
+        List<Integer> patientsId = List.of(1, 2);
         SDTPController controller = new SDTPController();
         List<Patients> result = controller.GetListAdmittedPatients(patientsId);
 
@@ -73,19 +105,32 @@ class UnitTest_GetListAdmittedPatients {
         assertEquals("Heather", result.get(1).getForename());
         assertEquals("2224446666", result.get(1).getNhsNumber());
 
-        for (int i = 0; i < result.size(); i++) {
-            System.out.println(result.get(i).getId());
-            System.out.println(result.get(i).getSurname());
-            System.out.println(result.get(i).getForename());
+        for (Patients patient : result) {
+            System.out.println(patient.getId());
+            System.out.println(patient.getSurname());
+            System.out.println(patient.getForename());
         }
+
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("testGetListAdmittedPatientsMultiplePatientId - Execution time: " + executionTime + "ms");
     }
+
+    // Test for GetListAdmittedPatients method with null patient IDs
     @Test
     public void testGetListAdmittedPatientsNullPatientId() {
+        long startTime = System.currentTimeMillis();
+
         List<Integer> patientsId = null;
         SDTPController controller = new SDTPController();
         List<Patients> result = controller.GetListAdmittedPatients(patientsId);
 
         assertNull(result);
         System.out.println(result);
+
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("testGetListAdmittedPatientsNullPatientId - Execution time: " + executionTime + "ms");
     }
+
 }

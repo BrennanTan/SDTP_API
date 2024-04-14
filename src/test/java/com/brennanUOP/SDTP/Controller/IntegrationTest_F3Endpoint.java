@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 public class IntegrationTest_F3Endpoint {
     @Test
     public void F3Endpoint_Success() throws Exception {
+        long startTime = System.currentTimeMillis();
         HttpURLConnection mockConnection = mock(HttpURLConnection.class);
         // Mock response from the API
         String jsonResponse = "[{\"id\":1,\"admissionID\":1,\"employeeID\":4,\"startTime\":\"2020-11-28T16:45:00\",\"endTime\":\"2020-11-28T23:56:00\"},{\"id\":2,\"admissionID\":3,\"employeeID\":4,\"startTime\":\"2021-09-23T21:50:00\",\"endTime\":\"2021-09-24T09:50:00\"},{\"id\":3,\"admissionID\":2,\"employeeID\":6,\"startTime\":\"2020-12-07T22:14:00\",\"endTime\":\"2020-12-08T20:00:00\"},{\"id\":4,\"admissionID\":2,\"employeeID\":3}]";
@@ -37,6 +38,15 @@ public class IntegrationTest_F3Endpoint {
         assertEquals(4, result.get(0).getId());
         assertEquals("Jones", result.get(0).getSurname());
         assertEquals("Sarah", result.get(0).getForename());
+
+        for (Employees employees : result){
+            System.out.println(employees.getId());
+            System.out.println(employees.getSurname());
+            System.out.println(employees.getForename());
+        }
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("F2Endpoint_Success - Execution time: " + executionTime + "ms");
     }
     public JSONArray connectAndReturnJson(HttpURLConnection connection) {
         // Use the mock connection and return it's mock response

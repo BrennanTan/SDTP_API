@@ -1,6 +1,5 @@
 package com.brennanUOP.SDTP.Controller;
 
-
 import com.brennanUOP.SDTP.Model.Admission;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,8 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UnitTest_GetAdmissionsForSpecificPatient {
 
+    // Test for GetAdmissionsForSpecificPatient method
     @Test
     public void testGetAdmissionsForSpecificPatient() {
+        long startTime = System.currentTimeMillis();
+
         JSONArray jsonArray;
         try {
             jsonArray = new JSONArray(
@@ -34,10 +36,24 @@ class UnitTest_GetAdmissionsForSpecificPatient {
         assertEquals("2020-12-07T22:14:00", result.get(0).getAdmissionDate());
         assertEquals("0001-01-01T00:00:00", result.get(0).getDischargeDate());
         assertEquals(1, result.get(0).getPatientID());
+
+        for (Admission admission : result) {
+            System.out.println(admission.getId());
+            System.out.println(admission.getAdmissionDate());
+            System.out.println(admission.getDischargeDate());
+            System.out.println(admission.getPatientID());
+        }
+
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("testGetAdmissionsForSpecificPatient - Execution time: " + executionTime + "ms");
     }
 
+    // Test for GetAdmissionsForSpecificPatient method with no matching patientId
     @Test
     public void testGetAdmissionsForSpecificPatientWithNoMatchingPatientId() {
+        long startTime = System.currentTimeMillis();
+
         JSONArray jsonArray;
         try {
             jsonArray = new JSONArray(
@@ -51,15 +67,20 @@ class UnitTest_GetAdmissionsForSpecificPatient {
         String patientId = "1000";
         SDTPController controller = new SDTPController();
 
-        // Act
         List<Admission> result = controller.GetAdmissionsForSpecificPatient(jsonArray, patientId);
 
-        // Assert
         assertNull(result);
+
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("testGetAdmissionsForSpecificPatientWithNoMatchingPatientId - Execution time: " + executionTime + "ms");
     }
 
+    // Test for GetAdmissionsForSpecificPatient method with empty JSONArray
     @Test
     public void testGetAdmissionsForSpecificPatientWithEmptyJsonArray() {
+        long startTime = System.currentTimeMillis();
+
         JSONArray jsonArray;
         try {
             jsonArray = new JSONArray("[]");
@@ -72,6 +93,10 @@ class UnitTest_GetAdmissionsForSpecificPatient {
         List<Admission> result = controller.GetAdmissionsForSpecificPatient(jsonArray, patientId);
 
         assertNull(result);
+
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("testGetAdmissionsForSpecificPatientWithEmptyJsonArray - Execution time: " + executionTime + "ms");
     }
-    
+
 }

@@ -11,8 +11,12 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UnitTest_GetListOfNoAdmissionStaff {
+
+    // Test for GetListStaffIdsWithAdmissions method
     @Test
-    public void GetListStaffIdsWithAdmissions() {
+    public void testGetListStaffIdsWithAdmissions() {
+        long startTime = System.currentTimeMillis();
+
         JSONArray jsonArray;
         try {
             jsonArray = new JSONArray(
@@ -29,10 +33,17 @@ class UnitTest_GetListOfNoAdmissionStaff {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("testGetListStaffIdsWithAdmissions - Execution time: " + executionTime + "ms");
     }
 
+    // Test for GetListStaffIdsWithAdmissions method with empty JSONArray
     @Test
-    public void GetListStaffIdsWithAdmissionsEmptyJsonArray() {
+    public void testGetListStaffIdsWithAdmissionsEmptyJsonArray() {
+        long startTime = System.currentTimeMillis();
+
         JSONArray jsonArray;
         try {
             jsonArray = new JSONArray("[]");
@@ -44,10 +55,18 @@ class UnitTest_GetListOfNoAdmissionStaff {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("testGetListStaffIdsWithAdmissionsEmptyJsonArray - Execution time: " + executionTime + "ms");
     }
+
+    // Test for GetListOfNoAdmissionStaff method
     @Test
     public void testGetListOfNoAdmissionStaff() {
-        Set<Integer> staffIdsWithAdmissions = Set.of(3,4,6);
+        long startTime = System.currentTimeMillis();
+
+        Set<Integer> staffIdsWithAdmissions = Set.of(3, 4, 6);
         SDTPController controller = new SDTPController();
         List<Employees> result = controller.GetListOfNoAdmissionStaff(staffIdsWithAdmissions);
 
@@ -64,29 +83,49 @@ class UnitTest_GetListOfNoAdmissionStaff {
         assertEquals("Wicks", result.get(2).getSurname());
         assertEquals("Patrick", result.get(2).getForename());
 
-        for (int i = 0; i < result.size(); i++) {
-            System.out.println(result.get(i).getId());
-            System.out.println(result.get(i).getSurname());
-            System.out.println(result.get(i).getForename());
+        for (Employees employee : result) {
+            System.out.println(employee.getId());
+            System.out.println(employee.getSurname());
+            System.out.println(employee.getForename());
         }
+
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("testGetListOfNoAdmissionStaff - Execution time: " + executionTime + "ms");
     }
+
+    // Test for GetListOfNoAdmissionStaff method with null staff IDs
     @Test
     public void testGetListOfNoAdmissionStaffNullIDs() {
+        long startTime = System.currentTimeMillis();
+
         Set<Integer> staffIdsWithAdmissions = null;
         SDTPController controller = new SDTPController();
         List<Employees> result = controller.GetListOfNoAdmissionStaff(staffIdsWithAdmissions);
 
         assertNull(result);
         System.out.println(result);
+
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("testGetListOfNoAdmissionStaffNullIDs - Execution time: " + executionTime + "ms");
     }
+
+    // Test for GetListOfNoAdmissionStaff method with empty staff IDs
     @Test
     public void testGetListOfNoAdmissionStaffEmptyIDs() {
+        long startTime = System.currentTimeMillis();
+
         Set<Integer> staffIdsWithAdmissions = Set.of();
         SDTPController controller = new SDTPController();
         List<Employees> result = controller.GetListOfNoAdmissionStaff(staffIdsWithAdmissions);
 
         assertNull(result);
         System.out.println(result);
+
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("testGetListOfNoAdmissionStaffEmptyIDs - Execution time: " + executionTime + "ms");
     }
 
 }
