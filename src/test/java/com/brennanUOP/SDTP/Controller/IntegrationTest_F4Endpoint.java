@@ -54,7 +54,7 @@ public class IntegrationTest_F4Endpoint {
         }
         long endTime = System.currentTimeMillis();
         long executionTime = endTime - startTime;
-        System.out.println("F2Endpoint_Success - Execution time: " + executionTime + "ms");
+        System.out.println("F4Endpoint_Success - Execution time: " + executionTime + "ms");
     }
     public JSONArray connectAndReturnJson(HttpURLConnection connection) {
         // Use the mock connection and return it's mock response
