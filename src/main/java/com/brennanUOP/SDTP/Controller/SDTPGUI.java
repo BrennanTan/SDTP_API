@@ -58,6 +58,13 @@ public class SDTPGUI extends JFrame {
     private void displayAdmissions(List<Admission> admissions) {
         // Clear existing rows
         tableModel.setRowCount(0);
+
+        // Check if admissions list is empty or null
+        if (admissions == null || admissions.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Patient not found. Invalid ID provided.", "No data found", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
         // Add new rows
         for (Admission admission : admissions) {
             Object[] rowData = {admission.getId(), admission.getAdmissionDate(), admission.getDischargeDate(), admission.getPatientID()};
