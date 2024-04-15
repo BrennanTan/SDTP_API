@@ -41,7 +41,7 @@ class UnitTest_GetMostAdmissionsStaff {
 
     // Test for GetEmployeeAdmissionsCount method with null JSONArray
     @Test
-    public void testGetEmployeeAdmissionsCountNullJsonArray() {
+    public void testGetEmployeeAdmissionsCountEmptyJsonArray() {
         long startTime = System.currentTimeMillis();
 
         JSONArray jsonArray;
